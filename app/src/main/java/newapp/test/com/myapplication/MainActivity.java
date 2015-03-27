@@ -24,15 +24,25 @@ public class MainActivity extends ActionBarActivity {
         model.value = 15;
         List<MyInterface> content = new ArrayList<>();
         content.add(new TypeA());
-        content.add(new TypeA());
+        TypeA typeA = new TypeA();
+        typeA.name = "A";
+        content.add(typeA);
         content.add(new TypeA());
         content.add(new TypeA());
         model.content = content;
 
         Parcelable wrapped = Parcels.wrap(model);
 
-        Model unwrappers = Parcels.unwrap(wrapped);
-        assert (unwrappers.content.size() != model.content.size());
+        Model unwrapped = Parcels.unwrap(wrapped);
+        if (unwrapped.value != model.value) {
+            throw new RuntimeException("Not same value");
+        }
+        if (unwrapped.content.size() != model.content.size()) {
+            throw new RuntimeException("Not same size");
+        }
+        if (!((TypeA) unwrapped.content.get(1)).name.equals(((TypeA) model.content.get(1)).name)) {
+            throw new RuntimeException("Not same name");
+        }
     }
 
     @Override
